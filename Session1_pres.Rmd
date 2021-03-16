@@ -1,0 +1,578 @@
+---
+title: "Session 1"
+author: "Lauren Yee"
+date: "March 31, 2020"
+output:
+  beamer_presentation: default
+  slidy_presentation:
+    css: pres_css.css
+    footer: Lauren Yee, 2020
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+library(ggplot2)
+library(forcats)
+```
+
+
+
+##Session 1:
+
+-	What is data visualization?
+-	Data Visualization Principles
+-	What is the tidyverse?
+-	What is Markdown?
+-	Setting up your environment and projects
+-	Introduction to RMarkdown
+-	Introduction to wildfires data set
+-	Exploratory Analysis of Wildfires
+
+Course Materials: www.mapdatascience.com/ggplot
+
+***
+
+<head>
+  <link href="./fontawesome/css/all.css" rel="stylesheet"> <!--load all styles -->
+</head>
+
+##About me{data-background=#ff0000}
+<div id="container">
+<p> Wearer of many hats! Data Wrangling, Data Visualization, Modelling, Dashboards, Web Development and Research.</p>
+<p>Prior to consulting role, studied emerging infectious diseases and spatial epidemiology</p>
+
+  <div style="float:left; width:70%;">
+    
+  </br>
+   <span class="fas fa-envelope">
+    <span style="font-family: Roboto">Lauren@mapdatascience.com</span>
+    </span>
+  </br>
+  <a href="https://www.twitter.com/EcoLaurenY" class="fab fa-twitter">
+    <span style="font-family: Roboto"> @EcoLaurenY</span>
+  </a>
+  </br>
+  <a href="https://www.researchgate.net/profile/Lauren_Yee" class="fas fa-address-card"> <span style="font-family: Roboto"> Research Gate</span>
+  </a>
+
+  </div>
+  <div style="float:right; width:30%;">
+  
+  <img src="./Figures/laur.png">
+  <p> Lauren Yee </br> Data Scientist</p>
+  </div>
+
+</div>
+
+# Objectives
+
+1.	Use the ggplot2 library to visualize data
+2.	Use tidyverse packages to analyze data
+3.	Create reproducible PDF and Word Reports using RMarkdown
+4.	Create interactive reports
+
+<div class="blue">
+**What this course is:**
+
+- An introduction to the `ggplot2` library and the various chart types and aesthetics
+
+- An introduction to R Markdown and reproducible reports
+
+</div>
+
+**What this course is not:**
+
+- a deep dive into data analysis or exploratory data analysis
+
+- a course on statistics, modeling or prediction
+
+- a comprehensive on all tidyverse functions and packages
+
+
+
+#Data Visualization
+
+- Communicate complex information, spot patterns and to tell a story
+
+- Core component of Explortatory Data Analysis
+
+- Step taken before modelling or interpreting data
+
+- Highlight useful information and trends
+
+- Charts, graphs, infographics and maps
+
+- Human are perceptive at viewing and processing visual information for large amounts of data 
+
+- Text and tables can be overwhelming and patterns are undetected
+
+
+#Data Visualization Principles
+
+<div class="blue">
+<center>
+What question need to be answered?
+
+Who is your intended audience ?
+
+What are you trying to show ?
+
+How can a visualization show this or make relationships more clear?
+
+</center>
+</div>
+------
+
+# Bad Visualizations
+
+
+- Too much information : many labels, too much colour, too much to interpret, many figures/data/labels on one plot
+
+- Confusing 
+
+    - at first glance you cannot interpret the figure without help
+
+- What is the point?
+
+- Misleading
+
+    - cutting off data values
+      
+    - bad scale or adjusted scales
+    
+    - hiding or removing outliers when they may be important to the anaylsis
+
+
+
+
+
+
+***
+
+```{r terrible_map,echo=FALSE, fig.align='center', out.width="100%"}
+
+knitr::include_graphics('./Figures/terrible_map.jpg')
+
+```
+
+***
+
+```{r scale,echo=FALSE, fig.align='center', out.width="100%"}
+
+knitr::include_graphics('./Figures/scales.png')
+
+```
+
+Source: Economist https://medium.economist.com/mistakes-weve-drawn-a-few-8cdd8a42d368
+
+***
+
+```{r bad_pie,echo=FALSE, fig.align='center', out.width="60%"}
+
+knitr::include_graphics('./Figures/bad_pie.jpg')
+
+```
+
+***
+
+```{r bad gallup, fig.align='center', out.width="75%"}
+
+knitr::include_graphics('./Figures/gallup_bad.jpg')
+
+```
+
+
+***
+
+#The Good
+
+
+```{r john, echo=FALSE, fig.align='center'}
+knitr::include_graphics('./Figures/john_snow.png')
+# 
+# include_graphics('./Figures/Session2_geoms_2.png')
+
+```
+
+John Snow, 1854
+
+
+***
+
+```{r bill, echo=FALSE, fig.align='center', out.width="100%"}
+knitr::include_graphics('./Figures/bill_rankin.jpg')
+# 
+# include_graphics('./Figures/Session2_geoms_2.png')
+
+```
+
+Source: Bill Rankin
+
+***
+
+```{r leo,echo=FALSE, fig.align='center', out.width="75%"}
+
+knitr::include_graphics('./Figures/leo.png')
+
+```
+
+Source: reddit.com/r/dataisbeautiful user:TrustLittleBrother
+
+***
+
+#Data Visualization Principles
+
+```{r goodchild, out.width="50%",out.extra='style="float:left; padding:5px"'}
+
+knitr::include_graphics('./Figures/goochild_rhind_2015.png')
+
+```
+
+
+
+
+**Size**: The size of points are varied based on the values or ratios from the data. 
+
+**Value/Contrast** – how light or dark a particular colour is while hue is held constant
+
+**Hue** is the use of color – used to distinguish between classes or categories (agricultural land vs urban land use)
+Hues can be combined with different textures or shapes if there are a large number of categories.  Typically when printing images that are in black and white.
+
+**Saturation** – a mixture of grey and a hue, the intensity of color.  
+
+Hue, Contrast, Saturation and Colour are important to understand in terms of accessibility and colourblindness. 
+
+Source:Goodchild and Rhind 2015
+
+
+#Shape
+
+Shape can be used to divide up categories, draw attention to a particular data point or shape.
+
+In ggplot2 we have the option of these shapes:
+
+<div class= "left" style="float:left; width:50%">
+```{r ggshapes}
+
+df_lines <- data.frame(
+  linetype = factor(
+    1:4,
+    labels = c("solid", "longdash", "dashed", "dotted")
+  )
+)
+ggplot(df_lines) +
+  geom_hline(aes(linetype = linetype, yintercept = 0), size = 2) +
+  scale_linetype_identity() +
+  facet_grid(linetype ~ .) +
+  theme_void(20)
+
+```
+
+</div>
+
+<div class= "right" style="float:right; width:50%">
+```{r shapes}
+
+df_shapes <- data.frame(shape = 0:24)
+ggplot(df_shapes, aes(0, 0, shape = shape)) +
+  geom_point(aes(shape = shape), size = 5, fill = 'blue') +
+  scale_shape_identity() +
+  facet_wrap(~shape) +
+  theme_void()
+
+```
+</div>
+
+
+
+#Contrast
+
+```{r nytimes, out.width="100%", out.height="100%",fig.cap="The New York Times"}
+knitr::include_graphics("./Figures/contrast_nytimes.png")
+
+
+
+```
+
+
+***
+
+
+##Colour
+
+- A great resource for choosing colour schemes that are colourblind friendly and aesthetically pleasing is ColorBrewer 2.0 http://colorbrewer2.org/
+- Two libraries in R `viridis` and `RColorbrewer`
+
+<div style="width:100%">
+<div class="left" style="float:left; width:40%">
+
+*Sequential* : Great for low to high values go from light colours to darker 
+
+*Diverging*: highlight differences e.g. standard deviation 
+
+
+*Qualitative*: Used to present categorical data, soil types, type of neighbourhood
+</div>
+
+<div class= "right" style="float:right; width:60%">
+
+```{r, echo=FALSE, fig.align='center',out.width="25%"}
+knitr::include_graphics('./Figures/sequential.png')
+
+knitr::include_graphics('./Figures/diverging.png')
+
+knitr::include_graphics('./Figures/qualitative.png')
+# include_graphics('./Figures/Session2_geoms_2.png')
+
+```
+
+</div>
+</div>
+
+***
+
+```{r, echo=FALSE,out.width="90%"}
+knitr::include_graphics('./Figures/colour_brewer.png')
+# 
+# include_graphics('./Figures/Session2_geoms_2.png')
+
+```
+
+
+
+***
+
+```{r colormap, fig.align='center',out.width="100%", out.height="100%"}
+knitr::include_graphics('./Figures/color_map.png')
+
+
+```
+
+
+***
+
+#Colour Blindness
+
+<div style="width:100%">
+<div class="left" style="float:left; width:50%">
+```{r cb, out.width="75%"}
+
+knitr::include_graphics("./Figures/colour_scale.png")
+
+```
+</div>
+<div class= "right" style="float:right; width:50%">
+
+```{r cb2, out.width="75%"}
+
+knitr::include_graphics("./Figures/cb2.png")
+
+```
+</div>
+</div>
+Source: Viridis Colour Scales (Green-Blind (Deuteranopia))
+
+
+#Colour
+
+Colour with no purpose takes away from the meaning of the data, aka rainbow effects
+
+```{r, rainbow, out.width="50%",out.extra='style="float:left; padding:0px"'}
+ggplot(mpg) + 
+  geom_bar(aes(x = fct_rev(fct_infreq(manufacturer)),fill=manufacturer))+ 
+    labs(x="manufacturer")+
+  coord_flip()
+
+
+
+```
+
+```{r, norainbow, out.width="50%",out.extra='style="float:right; padding:0px"'}
+ggplot(mpg) + 
+  geom_bar(aes(x = fct_rev(fct_infreq(manufacturer))),fill="lightblue") + 
+    labs(x="manufacturer")+
+  coord_flip()
+
+
+```
+
+
+#Choosing a visualization
+
+<div style="width:100%">
+<div class="left" style="float:left; width:40%">
+With all the plotting libraries available in R - how do you choose?
+
+There are some great flowcharts and websites to make the decision easier when stuck:
+
+- <a href="https://datavizcatalogue.com"> Data Viz Catalogue</a>
+
+- <a href="https://www.r-graph-gallery.com/"> R Graph Gallery</a>
+
+- More on this on Thursday...
+</div>
+<div class= "right" style="float:right; width:60%">
+```{r dataviz,out.width="75%",out.extra='style="float:right; padding:10px"'}
+
+knitr::include_graphics('./Figures/data_viz.png')
+
+
+```
+
+</div>
+</div>
+
+#Tidyverse
+
+A collection of R packages that make it easier to work with data. 
+
+```{r tidyverse,out.width= "35%", out.extra='style="float:right; padding:10px"'}
+knitr::include_graphics('./Figures/tidy_verse.png')
+
+```
+
+- `dplyr` is used to manipulate, group, and summarize data
+
+- `ggplot2` is a data visualization library that we will be using in the course!
+
+- `readr` loads data into R
+
+- `tibble` data format, similar to data frames
+
+- `purrr` functions which replace for loops with code that is both more succinct and easier to read
+
+- `tidyr` is a library meant for formatting and shaping data into the 'tidy' format...
+
+#Tidy Data
+
+It is often said that 80% of data analysis is spent on the cleaning and preparing data. The goal of tidyr is to help you create tidy data. Tidy data is data where:
+
+<div style="width:100%">
+<div class="left" style="float:left; width:40%">
+  - Every column is variable.
+  - Every row is an observation..
+  - Every cell is a single value.
+</div>
+
+<div class= "right" style="float:right; width:60%">
+
+```{r tidy,echo=FALSE,out.width="90%",out.extra=""}
+knitr::include_graphics('./Figures/tidy-1.png')
+
+
+```
+
+</div>
+</div>
+
+"data tidying: structuring datasets to facilitate analysis."
+
+Tidy data describes a standard way of storing data that is used wherever possible throughout the tidyverse. It is an attempt to standardize data.
+
+All `tidyverse` packages are designed to work with tidy data.
+
+
+
+
+#Setting up your environment and projects
+
+<div class="blue">
+R uses a "working directory" which is where R will first look for files that you want it to load and where it will save.
+A recommended structure for R projects is as follows:
+
+-  Set up a directory for the project/analysis. Inside this folder create a "Workspace". 
+- Inside your workspace create two folders, Data and Outputs. Data for where you will be loading raw data from and outputs for saving.
+
+A great tool in R is to "Create a New Project", which will then be mapped to your "Workspace".
+This is similar to use `setwd()` in R, however all projects by default are mapped to the folder it is saved in. 
+
+- All references can be relative`"./Data/"` rather than absolute paths `"C:/Desktop/Projects/ABC/Data/"`
+
+See also: https://support.rstudio.com/hc/en-us/articles/200526207-Using-Projects
+
+</div>
+
+#R Markdown
+
+- *markdown* is a simplified language for text output that is commonly used to convert text to the HTML language that is meant to be easily understood.
+
+- R Markdown is an authoring format that combines the *markdown* syntax with embedded R code chunks
+
+- allows you to combine your notes, narrative, methods, code and results in one file
+
+- fully reproducible with many output formats: PDF, word, html, dashboards and slideshows
+
+- can use multiple programming languages in one document such as: R, Python, and SQL
+
+https://rmarkdown.rstudio.com/
+
+
+# R Markdown
+
+Designed to be used in three ways:
+
+1. Communication to decision makers
+
+    - high level conclusions and visualizations
+
+2. Collaboration with teams 
+
+    - Including code, methods and approach
+
+3. Environment to **do** data analysis 
+
+    - A modern day lab notebook including what you did, your code, and why you did it that way
+
+
+
+# R Markdown
+
+All R markdown documents end in **.rmd** as opposed to **.R**. The start of a markdown file is called a "YAML". Here you can specify the title and other meta data attributes to your file, as well as the outputs generated. Such as a pdf, word file, or html document
+
+Each "chunk" represented by ``` of R code can executed independently and visualizations are generated in-line.
+
+```{r default,echo=FALSE,out.width="90%",out.extra=""}
+knitr::include_graphics('./Figures/markdown.png')
+
+
+```
+
+
+#Chunk Options
+
+`eval = FALSE` prevents code from being evaluated. This is useful for displaying example code, or for disabling a large block of code without commenting each line.
+
+`include = FALSE` runs the code, but doesn’t show the code or results in the final document. 
+
+`echo = FALSE` prevents code, but not the results from appearing in the finished file. Use this when writing reports aimed at people who don’t want to see the underlying R code. Or to show a figure generated by `ggplot2`
+
+```{r markdown output,out.width="90%",out.extra=""}
+
+knitr::include_graphics("./Figures/default_markdown.png")
+
+```
+
+***
+
+#Change Theme
+
+```{r markdown output2,out.width= "25%", out.extra='style="float:left; padding:10px"'}
+
+knitr::include_graphics("./Figures/darkly_yaml.png")
+
+```
+
+```{r darkly, out.width= "75%", out.extra='style="float:right; padding:0px"'}
+knitr::include_graphics("./Figures/darkly.png")
+```
+
+***
+
+#In R
+
+-	Introduction to RMarkdown
+-	Introduction to wildfires data set
+-	Exploratory Analysis of Wildfires
+
+
+
